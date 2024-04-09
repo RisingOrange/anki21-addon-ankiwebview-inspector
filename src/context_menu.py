@@ -7,7 +7,7 @@ from aqt.webview import AnkiWebView
 from . import consts
 from .inspector import MainWindowInspector, SubWindowInspector
 from .widgets import InspectorDock
-from .window_info import windows
+from .window_info import windows, WindowInfo
 
 
 def inspect_main_window(inspected_page: webview.AnkiWebPage) -> None:
@@ -45,7 +45,7 @@ def inspect_sub_window(
 def on_webview_will_show_context_menu(webview: AnkiWebView, menu: qt.QMenu) -> None:
     window = webview.window()
     if window_info := next(
-        (i for i in windows if type(window) is i.get_widget()), None
+        (i for i in windows if type(window) is i.get_widget()), WindowInfo("")
     ):
         if window_info.main_window:
             # mw.web, mw.bottomWeb, mw.toolbarWeb
