@@ -7,7 +7,7 @@ from aqt.webview import AnkiWebView
 from . import consts
 from .inspector import MainWindowInspector, SubWindowInspector
 from .widgets import InspectorDock
-from .window_info import windows, WindowInfo
+from .window_info import WindowInfo, windows
 
 
 def inspect_main_window(inspected_page: webview.AnkiWebPage) -> None:
