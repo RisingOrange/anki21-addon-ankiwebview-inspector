@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import cast
+
 from aqt import gui_hooks, mw, qt, webview
 from aqt.editor import EditorWebView
 from aqt.webview import AnkiWebView
@@ -7,7 +9,7 @@ from aqt.webview import AnkiWebView
 from . import consts
 from .inspector import MainWindowInspector, SubWindowInspector
 from .widgets import InspectorDock
-from .window_info import windows, WindowInfo
+from .window_info import WindowInfo, windows
 
 
 def inspect_main_window(inspected_page: webview.AnkiWebPage) -> None:
@@ -17,7 +19,7 @@ def inspect_main_window(inspected_page: webview.AnkiWebPage) -> None:
         inspector: MainWindowInspector
         dock: InspectorDock | None
         if dock := mw.findChild(InspectorDock):
-            inspector = dock.widget()
+            inspector = cast(MainWindowInspector, dock.widget())
             inspector.inspected_page_changed = True
         else:
             inspector = MainWindowInspector()
@@ -38,12 +40,15 @@ def inspect_sub_window(
         )
         inspector = SubWindowInspector(window_widget, target_widget, insert_pos)
         inspector.set_page(inspected_page)
-        layout: qt.QBoxLayout = window_widget.layout()
+        layout = window_widget.layout()
+        assert isinstance(layout, qt.QBoxLayout)
         layout.insertWidget(insert_pos, inspector.splitter, 1)
 
 
 def on_webview_will_show_context_menu(webview: AnkiWebView, menu: qt.QMenu) -> None:
     window = webview.window()
+    if window is None:
+        return
     if window_info := next(
         (i for i in windows if type(window) is i.get_widget()), WindowInfo("")
     ):

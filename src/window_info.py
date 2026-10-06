@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from operator import attrgetter
-from typing import Callable, Union
+from typing import Any, Callable, Union
 
 import aqt
 from aqt import qt
@@ -13,11 +13,11 @@ from .logger import logger
 @dataclass
 class WindowInfo:
     dotted_attr: str
-    target: Union[str, Callable[[qt.QWidget], qt.QWidget]] = ""
+    target: Union[str, Callable[[Any], qt.QWidget]] = ""
     insert_pos: int = 0
     main_window: bool = False
 
-    def get_widget(self) -> qt.Qwidget | None:
+    def get_widget(self) -> type[qt.QWidget] | None:
         try:
             return attrgetter(self.dotted_attr)(aqt)
         except Exception as e:
